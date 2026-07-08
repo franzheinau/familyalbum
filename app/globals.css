@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tape-clay: #B5654A;
+  --tape-mustard: #C9A64A;
+}
+
+body {
+  position: relative;
+  background-color: #F5EEE1;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(201, 166, 74, 0.08), transparent 40%),
+    radial-gradient(circle at 80% 60%, rgba(181, 101, 74, 0.08), transparent 45%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("/grain.svg");
+  background-size: 220px 220px;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Polaroid photo card — the signature element of the album */
+.polaroid {
+  background: #FBF8F1;
+  padding: 0.85rem 0.85rem 2.75rem 0.85rem;
+  box-shadow: 0 2px 4px rgba(62, 46, 34, 0.15), 0 10px 20px -6px rgba(62, 46, 34, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+}
+
+.polaroid:hover,
+.polaroid:focus-within {
+  transform: translateY(-6px) rotate(0deg) !important;
+  box-shadow: 0 6px 10px rgba(62, 46, 34, 0.18), 0 20px 30px -8px rgba(62, 46, 34, 0.3);
+  z-index: 10;
+}
+
+.polaroid-caption {
+  font-family: var(--font-special-elite), monospace;
+  color: #6B5645;
+}
+
+/* Washi tape corner accents */
+.washi-tape {
+  position: absolute;
+  width: 64px;
+  height: 24px;
+  opacity: 0.88;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.washi-tape::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.25) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.paper-texture {
+  background-color: #EDE1C9;
+  box-shadow: inset 0 0 60px rgba(107, 86, 69, 0.12);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(107, 86, 69, 0.35);
+  border-radius: 999px;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s ease both;
+}
