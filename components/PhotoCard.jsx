@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import BlurImage from "./BlurImage";
 
 const TILTS = ["-rotate-2", "rotate-1", "-rotate-1", "rotate-2", "rotate-0"];
 const TAPE_COLORS = ["bg-clay", "bg-mustard"];
@@ -30,7 +30,7 @@ export default function PhotoCard({ post, index }) {
       />
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-paper">
         {cover ? (
-          <Image
+          <BlurImage
             src={cover.url}
             alt={post.title}
             fill

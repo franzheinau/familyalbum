@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { prisma } from "@/lib/db";
 import PhotoCard from "@/components/PhotoCard";
+import OnThisDay from "@/components/OnThisDay";
+import SearchBar from "@/components/SearchBar";
 
 export const dynamic = "force-dynamic";
 
@@ -10,16 +13,17 @@ async function getYears() {
   return Array.from(years).sort((a, b) => b - a);
 }
 
-async function getPosts(year) {
-  const where = year
-    ? {
-        eventDate: {
-          gte: new Date(`${year}-01-01T00:00:00.000Z`),
-          lt: new Date(`${Number(year) + 1}-01-01T00:00:00.000Z`),
-        },
-      }
-    : {};
-
+async function getPosts(year, query) {
+  const where = {};
+  if (year) {
+    where.eventDate = {
+      gte: new Date(`${year}-01-01T00:00:00.000Z`),
+      lt: new Date(`${Number(year) + 1}-01-01T00:00:00.000Z`),
+    };
+  }
+  if (query) {
+    where.title = { contains: query, mode: "insensitive" };
+  }
   return prisma.post.findMany({
     where,
     orderBy: { eventDate: "desc" },
@@ -27,9 +31,40 @@ async function getPosts(year) {
   });
 }
 
+async function getStats() {
+  const total = await prisma.post.count();
+  const oldest = await prisma.post.findFirst({ orderBy: { eventDate: "asc" } });
+  return { total, sinceYear: oldest ? new Date(oldest.eventDate).getFullYear() : null };
+}
+
+async function getOnThisDay() {
+  const today = new Date();
+  const posts = await prisma.post.findMany({
+    where: { eventDate: { lt: new Date(`${today.getFullYear()}-01-01T00:00:00.000Z`) } },
+    include: { photos: { orderBy: { order: "asc" }, take: 1 } },
+  });
+  const matches = posts.filter((p) => {
+    const d = new Date(p.eventDate);
+    return d.getMonth() === today.getMonth() && d.getDate() === today.getDate();
+  });
+  if (matches.length === 0) return null;
+  const picked = matches[Math.floor(Math.random() * matches.length)];
+  return {
+    post: picked,
+    yearsAgo: today.getFullYear() - new Date(picked.eventDate).getFullYear(),
+  };
+}
+
 export default async function HomePage({ searchParams }) {
   const selectedYear = searchParams?.tahun || null;
-  const [years, posts] = await Promise.all([getYears(), getPosts(selectedYear)]);
+  const query = searchParams?.cari || "";
+
+  const [years, posts, stats, onThisDay] = await Promise.all([
+    getYears(),
+    getPosts(selectedYear, query),
+    getStats(),
+    query ? Promise.resolve(null) : getOnThisDay(),
+  ]);
 
   return (
     <main className="relative z-[1] min-h-screen">
@@ -44,7 +79,24 @@ export default async function HomePage({ searchParams }) {
           Setiap foto punya cerita. Ini tempat Saya menyimpannya — supaya tidak hilang
           ditelan waktu. -Rifaldi
         </p>
+        {stats.total > 0 && (
+          <p className="polaroid-caption mt-3 text-xs text-ink-soft/70">
+            {stats.total} kenangan tersimpan{stats.sinceYear ? ` sejak ${stats.sinceYear}` : ""}
+          </p>
+        )}
       </header>
+
+      {onThisDay && (
+        <div className="px-6">
+          <OnThisDay post={onThisDay.post} yearsAgo={onThisDay.yearsAgo} />
+        </div>
+      )}
+
+      <div className="mx-auto mb-6 max-w-5xl px-6">
+        <Suspense fallback={<div className="h-10" />}>
+          <SearchBar />
+        </Suspense>
+      </div>
 
       {years.length > 0 && (
         <nav className="scrollbar-thin mx-auto mb-10 flex max-w-5xl gap-2 overflow-x-auto px-6 pb-2">
@@ -77,9 +129,13 @@ export default async function HomePage({ searchParams }) {
       <section className="mx-auto max-w-6xl px-6 pb-24">
         {posts.length === 0 ? (
           <div className="mx-auto max-w-sm rounded-lg border border-dashed border-ink-soft/30 py-16 text-center">
-            <p className="font-display text-xl text-ink">Album masih kosong</p>
+            <p className="font-display text-xl text-ink">
+              {query ? "Tidak ada yang cocok" : "Album masih kosong"}
+            </p>
             <p className="mt-2 text-sm text-ink-soft">
-              Belum ada kenangan yang tersimpan untuk saat ini.
+              {query
+                ? `Coba kata kunci lain selain "${query}".`
+                : "Belum ada kenangan yang tersimpan untuk saat ini."}
             </p>
           </div>
         ) : (
