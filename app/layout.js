@@ -25,7 +25,7 @@ const specialElite = Special_Elite({
 });
 
 export const metadata = {
-  title: "Album Kenangan Rifaldi,Teman & Keluarga",
+  title: "Album Kenangan Keluarga & Teman",
   description: "Buku kenangan digital Rifaldi,Teman & Keluarga — kumpulan foto dan cerita dari waktu ke waktu.",
   manifest: "/manifest.json",
   themeColor: "#B5654A",
