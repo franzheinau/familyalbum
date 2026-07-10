@@ -8,13 +8,17 @@ datasource db {
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  title     String
-  caption   String?
-  eventDate DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  photos    Photo[]
+  id           String   @id @default(cuid())
+  title        String
+  caption      String?
+  eventDate    DateTime
+  likes        Int      @default(0)
+  locationName String?
+  latitude     Float?
+  longitude    Float?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  photos       Photo[]
 }
 
 model Photo {
@@ -24,4 +28,11 @@ model Photo {
   order     Int      @default(0)
   postId    String
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model LoginAttempt {
+  id          String   @id @default(cuid())
+  ip          String   @unique
+  count       Int      @default(0)
+  lastAttempt DateTime @updatedAt
 }

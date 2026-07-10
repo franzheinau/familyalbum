@@ -50,7 +50,10 @@ export default function PhotoCard({ post, index }) {
       </div>
       <div className="mt-3 px-1">
         <p className="font-display text-lg leading-tight text-ink truncate">{post.title}</p>
-        <p className="polaroid-caption text-xs mt-1">{formatDate(post.eventDate)}</p>
+        <p className="polaroid-caption text-xs mt-1">
+          {formatDate(post.eventDate)}
+          {post.likes > 0 ? ` · ❤️ ${post.likes}` : ""}
+        </p>
       </div>
     </Link>
   );

@@ -1,4 +1,5 @@
 import { Fraunces, Karla, Special_Elite } from "next/font/google";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -26,8 +27,17 @@ const specialElite = Special_Elite({
 export const metadata = {
   title: "Album Kenangan Rifaldi,Teman & Keluarga",
   description: "Buku kenangan digital Rifaldi,Teman & Keluarga — kumpulan foto dan cerita dari waktu ke waktu.",
+  manifest: "/manifest.json",
+  themeColor: "#B5654A",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Album Kenangan",
+  },
+  icons: {
+    apple: "/apple-touch-icon.png",
+  },
 };
-
 
 export default function RootLayout({ children }) {
   return (
@@ -36,6 +46,7 @@ export default function RootLayout({ children }) {
         className={`${fraunces.variable} ${karla.variable} ${specialElite.variable} font-body bg-cream text-ink antialiased`}
       >
         {children}
+        <ScrollToTopButton />
       </body>
     </html>
   );

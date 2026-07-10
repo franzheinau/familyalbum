@@ -58,6 +58,9 @@ export async function PUT(request, { params }) {
       title: body.title,
       caption: body.caption || null,
       eventDate: new Date(body.eventDate),
+      locationName: body.locationName || null,
+      latitude: body.latitude ?? null,
+      longitude: body.longitude ?? null,
       photos: {
         create: newPhotos.map((p, index) => ({
           url: p.url,

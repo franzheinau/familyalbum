@@ -44,6 +44,9 @@ export async function POST(request) {
       title: body.title,
       caption: body.caption || null,
       eventDate: new Date(body.eventDate),
+      locationName: body.locationName || null,
+      latitude: body.latitude ?? null,
+      longitude: body.longitude ?? null,
       photos: {
         create: body.photos.map((p, index) => ({
           url: p.url,

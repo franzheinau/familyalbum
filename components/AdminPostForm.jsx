@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import nextDynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+
+const LocationPicker = nextDynamic(() => import("./LocationPicker"), {
+  ssr: false,
+  loading: () => <div className="h-56 w-full animate-pulse rounded-md bg-paper" />,
+});
 
 async function uploadToImageKit(file, onProgress) {
   const authRes = await fetch("/api/imagekit-auth");
@@ -47,6 +53,9 @@ export default function AdminPostForm({ mode = "create", initialPost = null }) {
   );
   const [caption, setCaption] = useState(initialPost?.caption || "");
   const [photos, setPhotos] = useState(initialPost?.photos || []); // {id?, url, fileId}
+  const [locationName, setLocationName] = useState(initialPost?.locationName || "");
+  const [latitude, setLatitude] = useState(initialPost?.latitude ?? null);
+  const [longitude, setLongitude] = useState(initialPost?.longitude ?? null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState("");
@@ -76,6 +85,11 @@ export default function AdminPostForm({ mode = "create", initialPost = null }) {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function handleLocationChange(lat, lng) {
+    setLatitude(lat);
+    setLongitude(lng);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
@@ -87,7 +101,15 @@ export default function AdminPostForm({ mode = "create", initialPost = null }) {
 
     setSaving(true);
     try {
-      const payload = { title, eventDate, caption, photos };
+      const payload = {
+        title,
+        eventDate,
+        caption,
+        photos,
+        locationName: locationName || null,
+        latitude,
+        longitude,
+      };
       const url = mode === "edit" ? `/api/posts/${initialPost.id}` : "/api/posts";
       const method = mode === "edit" ? "PUT" : "POST";
 
@@ -151,6 +173,22 @@ export default function AdminPostForm({ mode = "create", initialPost = null }) {
           placeholder="Tuliskan cerita di balik foto ini, kalau mau..."
           className="mt-1 w-full rounded-md border border-ink-soft/30 bg-cream px-3 py-2 font-body text-ink focus:border-clay focus:outline-none focus:ring-1 focus:ring-clay"
         />
+      </div>
+
+      <div>
+        <label className="block font-body text-sm font-medium text-ink-soft">
+          Nama lokasi <span className="text-ink-soft/50">(opsional)</span>
+        </label>
+        <input
+          type="text"
+          value={locationName}
+          onChange={(e) => setLocationName(e.target.value)}
+          placeholder="Contoh: Rumah Nenek, Bukittinggi"
+          className="mt-1 w-full rounded-md border border-ink-soft/30 bg-cream px-3 py-2 font-body text-ink focus:border-clay focus:outline-none focus:ring-1 focus:ring-clay"
+        />
+        <div className="mt-2">
+          <LocationPicker latitude={latitude} longitude={longitude} onChange={handleLocationChange} />
+        </div>
       </div>
 
       <div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
@@ -32,13 +33,20 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main className="relative z-[1] flex min-h-screen items-center justify-center px-6">
-      <div className="polaroid w-full max-w-sm -rotate-1 !pb-8">
+    <main className="relative z-[1] flex min-h-screen items-center justify-center px-6 py-10">
+      <div className="polaroid relative z-10 w-full max-w-sm -rotate-1 !pb-8">
         <div className="px-2 pt-2">
           <p className="polaroid-caption text-center text-sm text-ink-soft">Area Admin</p>
           <h1 className="mt-1 text-center font-display text-2xl italic text-ink">
             Masuk ke Album
           </h1>
+
+          <Link
+            href="/"
+            className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-ink-soft/20 bg-cream/95 px-3 py-2 text-sm font-medium text-clay-dark shadow-sm transition hover:bg-paper"
+          >
+            ← Kembali ke halaman utama
+          </Link>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             {error && (
@@ -73,16 +81,6 @@ export default function AdminLoginPage() {
             >
               {loading ? "Memeriksa..." : "Masuk"}
             </button>
-
-            <div className="pt-1 text-center">
-              <button
-                type="button"
-                onClick={() => router.push("/")}
-                className="text-sm font-medium text-clay transition hover:text-clay-dark"
-              >
-                ← Kembali ke halaman post
-              </button>
-            </div>
           </form>
         </div>
       </div>

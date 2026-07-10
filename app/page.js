@@ -84,6 +84,20 @@ export default async function HomePage({ searchParams }) {
             {stats.total} kenangan tersimpan{stats.sinceYear ? ` sejak ${stats.sinceYear}` : ""}
           </p>
         )}
+        <div className="mt-5 flex justify-center gap-2">
+          <Link
+            href="/timeline"
+            className="rounded-full border border-ink-soft/30 px-4 py-1.5 text-sm text-ink-soft hover:border-clay hover:text-clay-dark"
+          >
+            Linimasa
+          </Link>
+          <Link
+            href="/map"
+            className="rounded-full border border-ink-soft/30 px-4 py-1.5 text-sm text-ink-soft hover:border-clay hover:text-clay-dark"
+          >
+            Peta Kenangan
+          </Link>
+        </div>
       </header>
 
       {onThisDay && (

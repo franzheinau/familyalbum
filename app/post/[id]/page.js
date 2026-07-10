@@ -1,10 +1,14 @@
 import Link from "next/link";
+import nextDynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import PostGallery from "@/components/PostGallery";
 import ShareButton from "@/components/ShareButton";
+import LikeButton from "@/components/LikeButton";
 
 export const dynamic = "force-dynamic";
+
+const PostMap = nextDynamic(() => import("@/components/PostMap"), { ssr: false });
 
 function formatDate(dateStr) {
   return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "long", year: "numeric" }).format(new Date(dateStr));
@@ -27,14 +31,25 @@ export default async function PostDetailPage({ params }) {
         <Link href="/" className="polaroid-caption text-sm text-clay-dark hover:underline">← kembali ke album</Link>
 
         <article className="mt-8">
-          <p className="polaroid-caption text-sm text-ink-soft">{formatDate(post.eventDate)}</p>
+          <p className="polaroid-caption text-sm text-ink-soft">
+            {formatDate(post.eventDate)}
+            {post.locationName ? ` · ${post.locationName}` : ""}
+          </p>
           <h1 className="mt-2 font-display text-3xl italic text-ink sm:text-4xl">{post.title}</h1>
-          <ShareButton title={post.title} />
+
+          <div className="flex flex-wrap gap-3">
+            <ShareButton title={post.title} />
+            <LikeButton postId={post.id} initialLikes={post.likes} />
+          </div>
 
           <PostGallery photos={post.photos} title={post.title} />
 
           {post.caption && (
             <p className="mt-8 whitespace-pre-wrap font-display text-lg leading-relaxed text-ink-soft">{post.caption}</p>
+          )}
+
+          {post.latitude && post.longitude && (
+            <PostMap latitude={post.latitude} longitude={post.longitude} locationName={post.locationName} />
           )}
         </article>
       </div>
