@@ -73,6 +73,16 @@ export default function AdminLoginPage() {
             >
               {loading ? "Memeriksa..." : "Masuk"}
             </button>
+
+            <div className="pt-1 text-center">
+              <button
+                type="button"
+                onClick={() => router.push("/")}
+                className="text-sm font-medium text-clay transition hover:text-clay-dark"
+              >
+                ← Kembali ke halaman post
+              </button>
+            </div>
           </form>
         </div>
       </div>
