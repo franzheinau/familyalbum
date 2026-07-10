@@ -73,7 +73,7 @@ export default async function HomePage({ searchParams }) {
           Album Digital
         </p>
         <h1 className="mt-3 font-display text-4xl italic text-ink sm:text-5xl">
-          Kenangan Rifaldi,Teman & Keluarga
+          Kenangan Keluarga & Teman
         </h1>
         <p className="mx-auto mt-4 max-w-md text-ink-soft">
           Setiap foto punya cerita. Ini tempat Saya menyimpannya — supaya tidak hilang
